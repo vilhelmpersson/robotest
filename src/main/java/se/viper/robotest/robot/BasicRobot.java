@@ -61,10 +61,10 @@ public class BasicRobot implements Robot {
 			newPosition.translate(1, 0);
 			break;
 		case NORTH:
-			newPosition.translate(0, 1);
+			newPosition.translate(0, -1);
 			break;
 		case SOUTH:
-			newPosition.translate(0, -1);
+			newPosition.translate(0, 1);
 			break;
 		case WEST:
 			newPosition.translate(-1, 0);

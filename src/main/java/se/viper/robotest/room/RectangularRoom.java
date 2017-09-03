@@ -12,12 +12,12 @@ public class RectangularRoom implements Room {
 		this(width, height, 0, 0);
 	}
 
-	public RectangularRoom(int width, int height, int bottomLeftX, int bottomLeftY) {
-		this(width, height, bottomLeftX, bottomLeftY, bottomLeftX, bottomLeftY);
+	public RectangularRoom(int width, int height, int upperLeftX, int upperLeftY) {
+		this(width, height, upperLeftX, upperLeftY, upperLeftX, upperLeftY);
 	}
 
-	public RectangularRoom(int width, int height, int bottomLeftX, int bottomLeftY, int startX, int startY) {
-		rectangle = new Rectangle(bottomLeftX, bottomLeftY, width, height);
+	public RectangularRoom(int width, int height, int upperLeftX, int upperLeftY, int startX, int startY) {
+		rectangle = new Rectangle(upperLeftX, upperLeftY, width, height);
 		startPosition = new Point(startX, startY);
 		//TODO: Validate start position and thow exception
 	}

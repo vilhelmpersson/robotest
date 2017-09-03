@@ -46,10 +46,10 @@ public class BasicRobotTest {
 		assertEquals(Direction.NORTH, myRobot.getDirection());
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
-		assertEquals(1, myRobot.getPosition().y);
+		assertEquals(-1, myRobot.getPosition().y);
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
-		assertEquals(2, myRobot.getPosition().y);
+		assertEquals(-2, myRobot.getPosition().y);
 	}
 
 	@Test
@@ -73,10 +73,10 @@ public class BasicRobotTest {
 		assertEquals(Direction.SOUTH, myRobot.getDirection());
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
-		assertEquals(-1, myRobot.getPosition().y);
+		assertEquals(1, myRobot.getPosition().y);
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
-		assertEquals(-2, myRobot.getPosition().y);
+		assertEquals(2, myRobot.getPosition().y);
 	}
 
 	@Test
@@ -95,18 +95,20 @@ public class BasicRobotTest {
 	@Test
 	public void roomBoundaries() {
 		BasicRobot myRobot = new BasicRobot(new RectangularRoom(5, 5));
+		myRobot.turnRight();
+		myRobot.turnRight();
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
 		assertEquals(1, myRobot.getPosition().y);
 		myRobot.step();
 		myRobot.step();
-		assertTrue(myRobot.step());
+		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
 		assertEquals(4, myRobot.getPosition().y);
 		myRobot.step();
 		assertEquals(0, myRobot.getPosition().x);
 		assertEquals(4, myRobot.getPosition().y);
-		myRobot.turnRight();
+		myRobot.turnLeft();
 		myRobot.step();
 		assertEquals(1, myRobot.getPosition().x);
 		assertEquals(4, myRobot.getPosition().y);
