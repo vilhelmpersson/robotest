@@ -2,10 +2,18 @@ package se.viper.robotest.robot;
 
 import java.awt.Point;
 
+import se.viper.robotest.room.Room;
+
 public class BasicRobot implements Robot {
 
 	private Direction direction = Direction.NORTH;
 	private Point position = new Point(0, 0);
+	private final Room room;
+
+	public BasicRobot(Room room) {
+		this.room = room;
+		this.position.setLocation(room.getStartPosition());
+	}
 
 	@Override
 	public boolean turnRight() {
@@ -47,21 +55,27 @@ public class BasicRobot implements Robot {
 
 	@Override
 	public boolean step() {
+		Point newPosition = position.getLocation();
 		switch (direction) {
 		case EAST:
-			position.translate(1, 0);
+			newPosition.translate(1, 0);
 			break;
 		case NORTH:
-			position.translate(0, 1);
+			newPosition.translate(0, 1);
 			break;
 		case SOUTH:
-			position.translate(0, -1);
+			newPosition.translate(0, -1);
 			break;
 		case WEST:
-			position.translate(-1, 0);
+			newPosition.translate(-1, 0);
 			break;
 		}
-		return true;
+		if (room.contains(newPosition)) {
+			position.setLocation(newPosition);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -71,7 +85,7 @@ public class BasicRobot implements Robot {
 
 	@Override
 	public Point getPosition() {
-		return position;
+		return position.getLocation();
 	}
 
 }
