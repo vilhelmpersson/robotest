@@ -30,8 +30,8 @@ public class CircularRoom implements Room {
 
 	@Override
 	public boolean contains(Point point) {
-		// TODO Check circular contains
-		return true;
+		double distance = origo.distance(point);
+		return (distance <= radius);
 	}
 
 }
