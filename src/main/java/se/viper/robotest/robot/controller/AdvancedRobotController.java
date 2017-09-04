@@ -16,6 +16,10 @@ public class AdvancedRobotController implements RobotController {
 			this.turnRight = turnRight;
 			this.step = step;
 		}
+
+		public String getRobotCommand() {
+			return String.format("%s=Turn Right,  %s=Turn Left,  %s=Go forward", turnRight, turnLeft, step);
+		}
 	}
 
 	private ControllerLanguage controllerLanguage = ControllerLanguage.ENG;
