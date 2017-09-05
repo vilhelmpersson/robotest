@@ -24,6 +24,22 @@ public class AdvancedRobotControllerTest {
 		assertEquals("SLRSLRS", myRobot.commands);
 	}
 
+	@Test
+	public void testGetterSetters() {
+		AdvancedRobotController myController = new AdvancedRobotController();
+		myController.setControllerLanguage(ControllerLanguage.SWE);
+		assertEquals(ControllerLanguage.SWE, myController.getControllerLanguage());
+	}
+
+	@Test
+	public void testEnum() {
+		String controllCommands = ControllerLanguage.SWE.getRobotCommand();
+		// Check that we find description for each command
+		assertTrue(controllCommands.indexOf("V=") != -1);
+		assertTrue(controllCommands.indexOf("H=") != -1);
+		assertTrue(controllCommands.indexOf("G=") != -1);
+	}
+
 	private class TestRobot implements Robot {
 		public String commands = "";
 

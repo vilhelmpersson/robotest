@@ -19,7 +19,10 @@ public class RectangularRoom implements Room {
 	public RectangularRoom(int width, int height, int upperLeftX, int upperLeftY, int startX, int startY) {
 		rectangle = new Rectangle(upperLeftX, upperLeftY, width, height);
 		startPosition = new Point(startX, startY);
-		//TODO: Validate start position and thow exception
+		if (!contains(startPosition))
+		{
+			throw new IllegalArgumentException("Start position must be inside the room.");
+		}
 	}
 
 	@Override

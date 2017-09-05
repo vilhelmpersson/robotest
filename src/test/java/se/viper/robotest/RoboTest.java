@@ -19,7 +19,6 @@ public class RoboTest {
 		AdvancedRobotController myController = new AdvancedRobotController(ControllerLanguage.SWE);
 		StandardDisplay myDisplay = new StandardDisplay();
 		myController.move("HGHGGHGHG", myRobot);
-		//TODO: Test fail. Rewrite code to have Y axis going downwards.
 		assertEquals("1 3 N", myDisplay.show(myRobot));
 	}
 	
@@ -30,7 +29,6 @@ public class RoboTest {
 		AdvancedRobotController myController = new AdvancedRobotController(ControllerLanguage.ENG);
 		StandardDisplay myDisplay = new StandardDisplay();
 		myController.move("RRFLFFLRF", myRobot);
-		//TODO: Test fail. Rewrite code to have Y axis going downwards.
 		assertEquals("3 1 Ö", myDisplay.show(myRobot));
 	}
 }

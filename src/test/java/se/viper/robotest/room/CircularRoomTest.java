@@ -65,5 +65,10 @@ public class CircularRoomTest {
 		assertEquals(42, room.getStartPosition().x);
 		assertEquals(4711, room.getStartPosition().y);
 	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testInvalidEntry() {
+		new CircularRoom(100, 0, 0, 42, 4711);
+	}
 
 }

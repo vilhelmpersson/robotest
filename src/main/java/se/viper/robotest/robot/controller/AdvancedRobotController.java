@@ -1,5 +1,7 @@
 package se.viper.robotest.robot.controller;
 
+import java.util.function.IntPredicate;
+
 import se.viper.robotest.robot.Robot;
 
 public class AdvancedRobotController implements RobotController {
@@ -33,16 +35,20 @@ public class AdvancedRobotController implements RobotController {
 
 	@Override
 	public boolean move(String command, Robot robot) {
-		// TODO Validate that all commands are valid before starting to move the robot
-		command.toUpperCase().chars().forEachOrdered(c -> {
-			if (c == controllerLanguage.turnRight)
-				robot.turnRight();
-			else if (c == controllerLanguage.turnLeft)
-				robot.turnLeft();
-			else if (c == controllerLanguage.step)
-				robot.step();
-		});
-		return true;
+		IntPredicate validMovesPredicate = c -> (c == controllerLanguage.turnRight || c == controllerLanguage.turnLeft
+				|| c == controllerLanguage.step);
+		boolean validMoves = command.chars().map(c -> Character.toUpperCase(c)).allMatch(validMovesPredicate);
+		if (validMoves) {
+			command.chars().map(c -> Character.toUpperCase(c)).forEachOrdered(c -> {
+				if (c == controllerLanguage.turnRight)
+					robot.turnRight();
+				else if (c == controllerLanguage.turnLeft)
+					robot.turnLeft();
+				else if (c == controllerLanguage.step)
+					robot.step();
+			});
+		}
+		return validMoves;
 	}
 
 	public ControllerLanguage getControllerLanguage() {

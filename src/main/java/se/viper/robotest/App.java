@@ -35,10 +35,13 @@ public class App {
 				System.out.println(
 						String.format("Please command your robot using sequence of %s", language.getRobotCommand()));
 				String command = scanner.nextLine();
-				if ("QUIT".equals(command)) {
+				if ("QUIT".equalsIgnoreCase(command)) {
 					quit = true;
 				} else {
-					robotController.move(command, robot);
+					boolean robotMoved = robotController.move(command, robot);
+					if (!robotMoved) {
+						System.out.println("Invalid commands. Please use valid command sequence!");
+					}
 					printRobotLocation(robot, display);
 				}
 
@@ -49,12 +52,10 @@ public class App {
 
 	private static ControllerLanguage selectLanguage(Scanner scanner) {
 		int langSelection = 0;
-		do {
-			System.out.println("Select language:");
-			System.out.println(String.format(" 1 - English    (%s)", ControllerLanguage.ENG.getRobotCommand()));
-			System.out.println(String.format(" 2 - Swedish    (%s)", ControllerLanguage.SWE.getRobotCommand()));
-			langSelection = getUserInput(scanner, "Select [1-2]:");
-		} while (langSelection < 1 || langSelection > 2);
+		System.out.println("Select language:");
+		System.out.println(String.format(" 1 - English    (%s)", ControllerLanguage.ENG.getRobotCommand()));
+		System.out.println(String.format(" 2 - Swedish    (%s)", ControllerLanguage.SWE.getRobotCommand()));
+		langSelection = getUserInput(scanner, "Select [1-2]:", null, 1, 2);
 		if (langSelection == 1) {
 			return ControllerLanguage.ENG;
 		} else if (langSelection == 2) {
@@ -63,14 +64,56 @@ public class App {
 		return ControllerLanguage.ENG;
 	}
 
-	private static int getUserInput(Scanner scanner, String description) {
-		return getUserInput(scanner, description, null);
+	private static Room selectRoom(Scanner scanner) {
+		int roomSelection = 0;
+		while (true) {
+			try {
+				System.out.println("Select room type:");
+				System.out.println(" 1 - Circular");
+				System.out.println(" 2 - Rectangular");
+				System.out.println(" 3 - Universal");
+				roomSelection = getUserInput(scanner, "Select [1-3]:", null, 1, 3);
+				if (roomSelection == 1) {
+					int radius = getUserInput(scanner, "Enter radius:", null, 1, Integer.MAX_VALUE);
+					int centerX = getUserInput(scanner, "Enter center X (0):", 0);
+					int centerY = getUserInput(scanner, "Enter center Y (0):", 0);
+					// Get start position and limit based on a "rectangular" circle
+					int startX = getUserInput(scanner, String.format("Enter start X (%d):", centerX), centerX,
+							centerX - radius, centerX + radius);
+					int startY = getUserInput(scanner, String.format("Enter start Y (%d):", centerY), centerY,
+							centerY - radius, centerY + radius);
+					return new CircularRoom(radius, centerX, centerY, startX, startY);
+				} else if (roomSelection == 2) {
+					int width = getUserInput(scanner, "Enter width:", null, 1, Integer.MAX_VALUE);
+					int height = getUserInput(scanner, "Enter height:", null, 1, Integer.MAX_VALUE);
+					int upperLeftX = getUserInput(scanner, "Enter upper left X (0):", 0);
+					int upperLeftY = getUserInput(scanner, "Enter upper left Y (0):", 0);
+					// Get start position and limit based on rectangle dimension
+					int startX = getUserInput(scanner, String.format("Enter start X (%d):", upperLeftX), upperLeftX,
+							upperLeftX, upperLeftX + width);
+					int startY = getUserInput(scanner, String.format("Enter start Y (%d):", upperLeftY), upperLeftY,
+							upperLeftY, upperLeftY + height);
+					return new RectangularRoom(width, height, upperLeftX, upperLeftY, startX, startY);
+				} else if (roomSelection == 3) {
+					int startX = getUserInput(scanner, "Enter start X (0):", 0);
+					int startY = getUserInput(scanner, "Enter start Y (0):", 0);
+					return new UniversalRoom(startX, startY);
+				}
+			} catch (IllegalArgumentException e) {
+				// Print out message and generat e new room definition
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 
 	private static int getUserInput(Scanner scanner, String description, Integer defaultValue) {
+		return getUserInput(scanner, description, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	private static int getUserInput(Scanner scanner, String description, Integer defaultValue, int minValue,
+			int maxValue) {
 		boolean validInput = false;
 		int number = 0;
-
 		do {
 			System.out.print(description);
 			try {
@@ -80,44 +123,16 @@ public class App {
 				} else {
 					number = Integer.parseInt(tmpInput);
 				}
-				validInput = true;
+				if (number < minValue || number > maxValue) {
+					System.out.println(String.format("Value must be in range %d and %d", minValue, maxValue));
+				} else {
+					validInput = true;
+				}
 			} catch (NumberFormatException e) {
-				System.out.print("Invalid number!");
+				System.out.println("Invalid number!");
 			}
 		} while (!validInput);
 		return number;
-	}
-
-	private static Room selectRoom(Scanner scanner) {
-		int roomSelection = 0;
-		while (roomSelection < 1 || roomSelection > 3) {
-			System.out.println("Select room type:");
-			System.out.println(" 1 - Circular");
-			System.out.println(" 2 - Rectangular");
-			System.out.println(" 3 - Universal");
-			roomSelection = getUserInput(scanner, "Select [1-3]:");
-		}
-		if (roomSelection == 1) {
-			int radius = getUserInput(scanner, "Enter radius:");
-			int centerX = getUserInput(scanner, "Enter center X (0):", 0);
-			int centerY = getUserInput(scanner, "Enter center Y (0):", 0);
-			int startX = getUserInput(scanner, String.format("Enter start X (%d):", centerX), centerX);
-			int startY = getUserInput(scanner, String.format("Enter start Y (%d):", centerY), centerY);
-			return new CircularRoom(radius, centerX, centerY, startX, startY);
-		} else if (roomSelection == 2) {
-			int width = getUserInput(scanner, "Enter width:");
-			int height = getUserInput(scanner, "Enter height:");
-			int upperLeftX = getUserInput(scanner, "Enter upper left X (0):", 0);
-			int upperLeftY = getUserInput(scanner, "Enter upper left Y (0):", 0);
-			int startX = getUserInput(scanner, String.format("Enter start X (%d):", upperLeftX), upperLeftX);
-			int startY = getUserInput(scanner, String.format("Enter start Y (%d):", upperLeftY), upperLeftY);
-			return new RectangularRoom(width, height, upperLeftX, upperLeftY, startX, startY);
-		} else if (roomSelection == 3) {
-			int startX = getUserInput(scanner, "Enter start X (0):", 0);
-			int startY = getUserInput(scanner, "Enter start Y (0):", 0);
-			return new UniversalRoom(startX, startY);
-		}
-		return null;
 	}
 
 	private static void printRobotLocation(Robot robot, Display display) {

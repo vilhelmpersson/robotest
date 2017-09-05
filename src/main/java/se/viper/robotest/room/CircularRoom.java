@@ -20,7 +20,9 @@ public class CircularRoom implements Room {
 		this.radius = radius;
 		origo = new Point(origoX, origoY);
 		startPosition = new Point(startX, startY);
-		// TODO: Validate start position and throw exception
+		if (!contains(startPosition)) {
+			throw new IllegalArgumentException("Start position must be inside the room.");
+		}
 	}
 
 	@Override
